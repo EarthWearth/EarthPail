@@ -8,7 +8,7 @@ void setup() {
 }
 
 void loop() {
-    int grams = analogRead(weight_sensor) * 453.592; // convert from pounds to grams
+    int weight = analogRead(weight_sensor) * 453.592; // convert from pounds to grams
     while(weight < platform_weight) { // nothing on platform
         delay(80); // wait with a delay to prevent nuclear meltdown
     if(weight < threshold) { // once while loop is interrupted, if plastic

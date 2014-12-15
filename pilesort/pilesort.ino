@@ -1,10 +1,20 @@
-int weight_sensor = "A0";
-float platform_weight = 0.0;
-float threshold = 9.5; // in grams
-float error = 0.0; // how
+#include <SoftwareServo.h>
+
+// pins
+const char sensor[] = "A0"; // load cell; just for reference
+const int servo[] = [13, 12]; // servo
+    const byte pwr = 13; // power pin: always on
+    const byte ctrl = 12; // control pin
+
+// variables
+float platform = 0.0; // weight of platform to subtract from measurements
+float threshold = 9.5; // cutoff between weights of trash and recyclables
+float error = 0.0; // maximum difference in measurement to excuse
 
 void setup() {
-    pinMode(weight_sensor, INPUT);
+    pinMode(A0, INPUT); // initialize load cell
+    pinMode(servo[pwr], OUTPUT); // initialize servo power pin
+    pinMode(servo[ctrl], OUTPUT); // initialize servo control pin
 }
 
 void loop() {
@@ -15,4 +25,5 @@ void loop() {
         // write: tilt platform to recyclable side
     else {
         // write: tilt platform to garbage side
+    }
 }

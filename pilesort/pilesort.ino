@@ -1,4 +1,4 @@
-#include <SoftwareServo.h>
+#include <Servo.h>
 
 // pins
 const char sensor[] = "A0"; // load cell; just for reference

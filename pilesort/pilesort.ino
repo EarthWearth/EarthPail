@@ -1,33 +1,67 @@
 #include <Servo.h>
 
+// objects
+Servo servobj;
+
 // pins
-const char sensor[] = "A0"; // load cell; just for reference
-const byte servo[] = [13, 12]; // servo
-  const byte pwr = 13; // power pin: always on
-  const byte ctrl = 12; // control pin
+const byte sensor = A0; // load cell
+const int servo[] = {13, 12}; // list of servo pins
+  const bool pwr = 0; // power pin: always on
+  const bool ctrl = 1; // control pin
+
+// constants
+const int angle[] = {90, 0, 180}; // list of standard angles
+  const bool flat = 0; // angle when platform is flat
+  const bool trash = 1; // angle when sorting trash
+  const byte recycle = 2; // angle when sorting recycling
+const int delays[] = {80, 5000}; // list of standard delays
+  const bool runs = 0; // delay between loops
+  const bool servo = 1; // delay to allow servo to move into position
 
 // variables
 float zero = 0.0; // weight of platform to subtract from measurements
 float threshold = 9.5; // cutoff between weights of trash and recyclables
 float error = 0.0; // maximum difference in measurement to excuse
+float weight; // in grams
+int errors; // number of times type of material could not be determined
 
 void setup() {
-  pinMode(A0, INPUT); // initialize load cell
+  pinMode(sensor, INPUT); // initialize load cell
   pinMode(servo[pwr], OUTPUT); // initialize servo power pin
     digitalWrite(servo[pwr], HIGH); // power servo
   pinMode(servo[ctrl], OUTPUT); // initialize servo control pin
+  servobj.attach(servo[ctrl]); // associate servo object with servo control pin
 }
 
 void loop() {
-  float weight = analogRead(weight_sensor) * 453.592; // convert from pounds to grams
-  while(weight < platform_weight) { // nothing on platform
-    delay(80); // wait with a delay to prevent nuclear meltdown
+  weight = analogRead(sensor) * 453.592; // convert from pounds to grams
+  while(weight < zero) { // nothing on platform
+    delay(delays[runs]); // wait with a delay to prevent nuclear meltdown
+  }
   if(weight - zero < threshold - error) { // once while loop is interrupted, if plastic with 100% certainty
-    // write: tilt platform to recyclable side
+    servobj.write(angle[recycle]); // sort recycling
+    delay(delays[servo]); // allow servo to move into position
+    servobj.write(angle[flat]); // return platform to flat position
+    delay(delays[runs]);
+  }
   else if(weight - zero > threshold + error) { // if nonrecyclable with 100% certainty
-    // write: tilt platform to garbage side
+    servobj.write(angle[trash]); // sort trash
+    delay(delays[servo]);
+    servobj.write(angle[flat]);
+    delay(delays[runs]);
   }
   else { // if uncertain
-    // write: tilt platform to garbage side and print to console
+    servobj.write(angle[trash]); // sort trash
+    delay(delays[servo]);
+    servobj.write(angle[flat]);
+    delay(delays[runs]);
+    errors++;
   }
 }
+
+/* TO DO
+
+  find way to record number of errors
+  make array list to record relevant weights
+  figure out why arrays aren't working with type system
+*/

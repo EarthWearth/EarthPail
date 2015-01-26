@@ -20,7 +20,7 @@ Servo servobj;
 
 // variables
 float zero = 0.0; // weight of platform to subtract from measurements
-float threshold = 9.5; // cutoff between weights of trash and recyclables
+float threshold = 11; // cutoff between weights of trash and recyclables
 float error = 0.0; // maximum difference in measurement to excuse
 float weight; // in grams
 int errors; // number of times type of material could not be determined
@@ -58,10 +58,3 @@ void loop() {
     errors++;
   }
 }
-
-/* TO DO
-
-  find way to record number of errors
-  make array list to record relevant weights
-  figure out why arrays aren't working with type system
-*/

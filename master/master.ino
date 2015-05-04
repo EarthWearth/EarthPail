@@ -19,8 +19,8 @@ Servo servobj;
   /*const*/ bool rot = 1; // delay to allow servo to move into position
 
 // variables
-float zero = 0.0; // weight of platform to subtract from measurements
-float threshold = 11; // cutoff between weights of trash and recyclables
+float zero = 240; // weight of platform to subtract from measurements
+float threshold = 265; // cutoff between weights of trash and recyclables
 float error = 0.0; // maximum difference in measurement to excuse
 float weight; // in grams
 int errors; // number of times type of material could not be determined
@@ -34,7 +34,7 @@ void setup() {
 }
 
 void loop() {
-  weight = analogRead(sensor) * 453.592; // convert from pounds to grams
+  weight = analogRead(sensor); // convert from pounds to grams
   while(weight < zero) { // nothing on platform
     delay(delays[runs]); // wait with a delay to prevent nuclear meltdown
   }

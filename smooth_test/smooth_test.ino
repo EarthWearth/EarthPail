@@ -9,11 +9,11 @@ const byte reading_count = 10, // readings to remember
 byte       readings[reading_count], // list of length "reading_count"
            index = 0, // list position to store/access reading
            total = 0;
-const int  servo_speed = 1000; // unit: 1/1000 second
+const int  servo_speed = 500; // unit: 1/1000 second
 float      average; // decimal precision for division
 Servo      platform;
 
-void move_to(byte some_angle) { // function definition
+void move_to(const byte some_angle) { // function definition
   platform.write(some_angle);
   delay(servo_speed); // wait for servo
   platform.write(standby_angle); // move back
@@ -28,25 +28,27 @@ void setup() {
 }
 
 void loop() {
-  total += (readings[index] = analogRead(sensor)); // add first reading to list and to total
+  readings[index] = analogRead(sensor);
+  total += readings[index]; // add first reading to list and to total
   Serial.print("1. total = "); Serial.println(total);
   index += 1; // add 1 to index
   Serial.print("2. index = "); Serial.println(index);
   total -= readings[index]; // subtract next reading
   Serial.print("3. total = "); Serial.println(total);
   
-  if(index == reading_count) // when we have finished the reading list
+  if(index == reading_count) { // when we have finished the reading list
     index = 0; // go back to the beginning
-    Serial.print("3a. index = "); Serial.println(index);
+    Serial.print("3? index = "); Serial.println(index);
+  }
   average = total / reading_count;
   Serial.print("4. average = "); Serial.println(average);
-  delay(servo_speed);
   if(average > threshold) {
     move_to(trash_angle);
-    Serial.println("trash");
+    Serial.println("4?0 trash");
   } else if(average > zero) {
     move_to(recycle_angle);
-    Serial.println("recycle");
-  } else
-    Serial.println("wait");
+    Serial.println("4?1 recycle");
+  } else {
+      
+    Serial.println("4?2 wait");
 }
